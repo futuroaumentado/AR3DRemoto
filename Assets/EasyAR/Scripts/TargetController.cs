@@ -10,6 +10,7 @@ using System;
 using UnityEngine;
 using UnityEngine.Events;
 using PolyToolkit;
+using System.Collections;
 
 namespace easyar
 {
@@ -20,8 +21,6 @@ namespace easyar
         private GameObject marcador;
         private GameObject[] modeloPoly;
         int primeraSeleccion = 0;
-
-        int valor = 0;
 
 
         public ActiveControlStrategy ActiveControl;
@@ -58,30 +57,25 @@ namespace easyar
              {
                  case 0:
 
-
                      urlAsset = assetUrl;
                      primeraSeleccion = 1;
                      break;
 
                  case 1:
 
-                     modeloPoly = GameObject.FindGameObjectsWithTag("Player");
-                     for (int i = 0; i < modeloPoly.Length; i++)
-                     {
-                         Destroy(modeloPoly[i].gameObject);
-                     }
+                    modeloPoly = GameObject.FindGameObjectsWithTag("Player");
+                    for (int i = 0; i < modeloPoly.Length; i++)
+                    {
+                        Destroy(modeloPoly[i].gameObject);
+                    }
 
-                     urlAsset = assetUrl;
-                     Debug.Log("Segunda entrada");
+                    urlAsset = assetUrl;
                     IsTracked = false;
-                    //PolyApi.GetAsset(urlAsset, MyCallback);
+
                     break;
              }
 
-
-
         }
-
 
 
         internal void OnTracking(bool status)
@@ -93,11 +87,9 @@ namespace easyar
                    
                     if (ActiveControl == ActiveControlStrategy.HideWhenNotTracking || (ActiveControl == ActiveControlStrategy.HideBeforeFirstFound && !firstFound))
                     {
-                        Debug.Log(status);
                         ActivarRenderizador(true);
-                        Debug.Log("Primera entrada");
-                        PolyApi.GetAsset(urlAsset, MyCallback);
-                        
+                        //PolyApi.GetAsset(urlAsset, MyCallback);
+                        StartCoroutine(getAsset());
                     }
                     firstFound = true;
                     if (TargetFound != null)
@@ -109,14 +101,13 @@ namespace easyar
                 {
                     if (ActiveControl == ActiveControlStrategy.HideWhenNotTracking)
                     {
-                        Debug.Log(status);
                         ActivarRenderizador(false);
                      
-                        modeloPoly = GameObject.FindGameObjectsWithTag("Player");
+                       /*modeloPoly = GameObject.FindGameObjectsWithTag("Player");
                         for (int i = 0; i < modeloPoly.Length; i++)
                         {
                             Destroy(modeloPoly[i].gameObject);
-                        }
+                        }*/
                     }
                     if (TargetLost != null)
                     {
@@ -133,6 +124,12 @@ namespace easyar
 
         protected abstract void OnTracking();
 
+
+        IEnumerator getAsset()
+        {
+            yield return new WaitForSeconds(0.5f);
+            PolyApi.GetAsset(urlAsset, MyCallback);
+        }
 
         void MyCallback(PolyStatusOr<PolyAsset> result)
         {
@@ -182,12 +179,14 @@ namespace easyar
             Debug.Log("Asset importado exitosamente");
 
             marcador = GameObject.Find("ImageTarget");
-            // result.Value.gameObject.transform.SetParent(marcador.transform, false);
-            result.Value.gameObject.transform.parent = marcador.transform;
+            result.Value.gameObject.transform.SetParent(marcador.transform, false);
+            //result.Value.gameObject.transform.parent = marcador.transform;
             result.Value.gameObject.transform.position = new Vector3(0, 0, 0);
             result.Value.gameObject.transform.Rotate(-90.0f, 0.0f, 0.0f, Space.Self);
             result.Value.gameObject.tag = "Player";
-            
+            urlAsset = "";
+
+
         }
 
         void ActivarRenderizador(bool active)
