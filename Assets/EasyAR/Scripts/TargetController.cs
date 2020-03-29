@@ -53,18 +53,8 @@ namespace easyar
 
         public void ObtenerAsset(string assetUrl)
         {
-
-            modeloPoly = GameObject.FindGameObjectsWithTag("Player");
-            for (int i = 0; i < modeloPoly.Length; i++)
-            {
-                Destroy(modeloPoly[i].gameObject);
-            }
-
-            urlAsset = assetUrl;
-           // valor = 1;
-            //PolyApi.GetAsset(urlAsset, MyCallback);
            
-            /* switch (primeraSeleccion)
+             switch (primeraSeleccion)
              {
                  case 0:
 
@@ -82,9 +72,11 @@ namespace easyar
                      }
 
                      urlAsset = assetUrl;
-                     //PolyApi.GetAsset(urlAsset, MyCallback);
-                     break;
-             }*/
+                     Debug.Log("Segunda entrada");
+                    IsTracked = false;
+                    //PolyApi.GetAsset(urlAsset, MyCallback);
+                    break;
+             }
 
 
 
@@ -98,10 +90,14 @@ namespace easyar
             {
                 if (status)
                 {
+                   
                     if (ActiveControl == ActiveControlStrategy.HideWhenNotTracking || (ActiveControl == ActiveControlStrategy.HideBeforeFirstFound && !firstFound))
-                    {   
-                            ActivarRenderizador(true);
-                            PolyApi.GetAsset(urlAsset, MyCallback);           
+                    {
+                        Debug.Log(status);
+                        ActivarRenderizador(true);
+                        Debug.Log("Primera entrada");
+                        PolyApi.GetAsset(urlAsset, MyCallback);
+                        
                     }
                     firstFound = true;
                     if (TargetFound != null)
@@ -113,13 +109,14 @@ namespace easyar
                 {
                     if (ActiveControl == ActiveControlStrategy.HideWhenNotTracking)
                     {
+                        Debug.Log(status);
                         ActivarRenderizador(false);
                      
-                        /*modeloPoly = GameObject.FindGameObjectsWithTag("Player");
+                        modeloPoly = GameObject.FindGameObjectsWithTag("Player");
                         for (int i = 0; i < modeloPoly.Length; i++)
                         {
                             Destroy(modeloPoly[i].gameObject);
-                        }*/
+                        }
                     }
                     if (TargetLost != null)
                     {
@@ -165,9 +162,9 @@ namespace easyar
 
         void ImportarAsset(PolyAsset asset, PolyStatusOr<PolyImportResult> result)
         {
-            urlAsset = "";
+          
 
-            modeloPoly = GameObject.FindGameObjectsWithTag("Player");
+           modeloPoly = GameObject.FindGameObjectsWithTag("Player");
             for(int i = 0; i < modeloPoly.Length; i++)
             {
                 Destroy(modeloPoly[i].gameObject);
@@ -190,7 +187,7 @@ namespace easyar
             result.Value.gameObject.transform.position = new Vector3(0, 0, 0);
             result.Value.gameObject.transform.Rotate(-90.0f, 0.0f, 0.0f, Space.Self);
             result.Value.gameObject.tag = "Player";
-
+            
         }
 
         void ActivarRenderizador(bool active)
