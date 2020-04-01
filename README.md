@@ -1,6 +1,6 @@
 # Importar modelos 3D en Realidad Aumentada desde Poly usando Unity y EasyAR
 
-1.- Genera y copiar un API Key de Google: https://developers.google.com/poly/develop/api
+1.- Genera y copiar un **API Key de Google**: https://developers.google.com/poly/develop/api
 
 2.- En el Editor de Unity ve al menu **Poly > Poly Toolkit Settings...**
 
